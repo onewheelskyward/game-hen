@@ -1,0 +1,8 @@
+; Engine configuration file.
+; Open this folder in Godot 4 to finish setup.
+
+config_version=5
+
+[application]
+
+config/name="game-hen"
