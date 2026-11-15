@@ -64,6 +64,14 @@ func _draw() -> void:
 		var across := (pts[1] - pts[0]).normalized().orthogonal() * (road_width + 3.0)
 		draw_line(start - across, start + across, START_COLOR, 2.0)
 
+	# Sector timing lines.
+	for k in range(1, TrackScript.SECTOR_COUNT):
+		var i := track.sector_start(k)
+		var p := pts[i]
+		if p.length() < radius - road_width:
+			var across_s := (pts[i + 1] - p).normalized().orthogonal() * (road_width + 3.0)
+			draw_line(p - across_s, p + across_s, TrackScript.SECTOR_LINE_COLOR, 2.0)
+
 	_draw_sweep(radius)
 
 	# The car: an arrow pointing up.

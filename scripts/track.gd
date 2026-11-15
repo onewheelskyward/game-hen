@@ -9,6 +9,14 @@ const ROAD_COLOR := Color(0.32, 0.32, 0.35)
 const CURB_RED := Color(0.8, 0.15, 0.15)
 const CURB_WHITE := Color(0.95, 0.95, 0.95)
 const LANE_COLOR := Color(1, 1, 1, 0.45)
+const SECTOR_LINE_COLOR := Color(1.0, 0.85, 0.1)
+
+## Control point where each sector begins, following Monza's F1 timing:
+## S1 start/finish → run to Lesmo 1 (Rettifilo, Curva Grande, Roggia),
+## S2 → back straight after Ascari (Lesmos, Serraglio, Ascari),
+## S3 → finish line (back straight, Parabolica).
+const SECTOR_CONTROL_POINTS := [0, 134, 262]
+const SECTOR_COUNT := 3
 
 # Centerline of Autodromo Nazionale Monza, clockwise, at 4 px per meter, lightly
 # smoothed so the chicanes stay drivable. Point 0 is the start/finish line.
@@ -407,6 +415,11 @@ func _init() -> void:
 	points = _catmull_rom(control_points, SMOOTH_STEPS)
 
 
+## Index into `points` where sector k (0-based) begins.
+func sector_start(k: int) -> int:
+	return SECTOR_CONTROL_POINTS[k] * SMOOTH_STEPS
+
+
 ## Returns {"index": nearest centerline segment, "distance": px from centerline}.
 func nearest(pos: Vector2) -> Dictionary:
 	var best_index := 0
@@ -438,6 +451,23 @@ func _draw() -> void:
 		draw_line(points[i], points[(i + 1) % n], LANE_COLOR, 4.0)
 
 	_draw_start_line()
+	_draw_sector_lines()
+
+
+func _draw_sector_lines() -> void:
+	var font := ThemeDB.fallback_font
+	for k in SECTOR_COUNT:
+		var i := sector_start(k)
+		var origin := points[i]
+		var dir := (points[i + 1] - points[i]).normalized()
+		var across := dir.orthogonal()
+		var half := WIDTH * 0.5 + CURB
+		if k > 0:  # sector 1 starts at the checkered line
+			draw_line(origin - across * half, origin + across * half, SECTOR_LINE_COLOR, 6.0)
+		# Label on the outside of the track, just past the line.
+		var label_pos := origin + across * (half + 16.0) + dir * 12.0
+		draw_string_outline(font, label_pos, "S%d" % (k + 1), HORIZONTAL_ALIGNMENT_LEFT, -1, 36, 6, Color.BLACK)
+		draw_string(font, label_pos, "S%d" % (k + 1), HORIZONTAL_ALIGNMENT_LEFT, -1, 36, SECTOR_LINE_COLOR)
 
 
 func _draw_start_line() -> void:
