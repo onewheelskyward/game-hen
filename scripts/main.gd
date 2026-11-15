@@ -4,6 +4,7 @@ extends Node2D
 
 const TrackScript := preload("res://scripts/track.gd")
 const CarScript := preload("res://scripts/car.gd")
+const RadarScript := preload("res://scripts/radar.gd")
 
 const TOTAL_LAPS := 3
 const SAVE_PATH := "user://best_lap.cfg"
@@ -155,6 +156,16 @@ func _build_hud() -> void:
 	banner_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	hud.add_child(banner_label)
 	banner_label.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+
+	var radar := RadarScript.new()
+	radar.track = track
+	radar.car = car
+	hud.add_child(radar)
+	radar.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
+	radar.offset_left = -240.0
+	radar.offset_top = -240.0
+	radar.offset_right = -20.0
+	radar.offset_bottom = -20.0
 
 
 func _style_label(label: Label, font_size: int) -> void:

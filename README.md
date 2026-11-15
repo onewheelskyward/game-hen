@@ -19,7 +19,7 @@ A top-down RC car time trial around a scaled-down Monza: three laps, beat your b
 | A / ← and D / → | Steer |
 | R | Restart |
 
-Driving on the grass slows you down. Every lap has hidden checkpoints, so you can't cut across the infield. Your best lap is saved between sessions.
+Driving on the grass slows you down. Every lap has hidden checkpoints, so you can't cut across the infield. Your best lap is saved between sessions. The radar in the bottom-right corner turns with the car, so the corners coming up appear above the yellow arrow.
 
 ## Layout
 
@@ -28,6 +28,7 @@ Driving on the grass slows you down. Every lap has hidden checkpoints, so you ca
 - `scripts/track.gd` — track shape (`control_points`) and drawing
 - `tools/make_track_points.py` — regenerates `control_points` from a circuit GeoJSON file
 - `scripts/car.gd` — car handling; tune the constants at the top
+- `scripts/radar.gd` — heading-up radar minimap (`RANGE` sets how far it sees)
 
 ## Track data
 
